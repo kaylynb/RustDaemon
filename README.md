@@ -22,9 +22,6 @@ Allows automatically firing a turret at predefined locations.
 - Rust+ credentials obtained through the RustPlusApi registration/sample workflow.
 - A camera/turret identifier.
 
-> [!IMPORTANT]
-> The paired player must be offline & the turret must not be in peacekeeper mode.
-
 SIGINT/Ctrl+C stops the daemon.
 
 ### Credentials
@@ -69,6 +66,9 @@ dotnet run --project RustDaemon.Cli -- report --log C:\path\seen-players.jsonl -
 ```
 
 ## Controlling a turret
+
+> [!IMPORTANT]
+> The paired player must be offline & the turret must not be in peacekeeper mode.
 
 ### Capture aim targets
 
