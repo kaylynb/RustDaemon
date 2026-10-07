@@ -1,0 +1,17 @@
+#!/usr/bin/env nu
+#MISE description="Build (and optionally push) the RustDaemon container image"
+#USAGE flag "-t --image <image>" var=#true help="Image reference to tag; repeat for multiple tags"
+#USAGE flag "--platforms <platforms>" help="Comma-separated target platforms" default="linux/amd64"
+#USAGE flag "--push" help="Push the image to the registry instead of loading it locally"
+#USAGE flag "--file <file>" help="Dockerfile to build" default="Dockerfile"
+#USAGE flag "--version <version>" help="Version to stamp into the published build" default="0.0.0-dev"
+#MISE depends=["publish --rid fdd --version {{usage.version}}"]
+
+let images = ($env.usage_image? | default "" | split row " " | where {|x| $x != "" })
+if ($images | length) == 0 {
+  error make {msg: "pass at least one --image"}
+}
+let tags = ($images | each {|image| ["-t" $image] } | flatten)
+let output = (if (($env.usage_push? | default "false") == "true") { "--push" } else { "--load" })
+
+^docker buildx build --file $env.usage_file --platform $env.usage_platforms ...$tags $output .

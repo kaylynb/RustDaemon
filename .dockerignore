@@ -1,0 +1,13 @@
+.git
+.idea
+**/bin
+**/obj
+**/publish
+dist
+.github
+mise-tasks
+credentials*.json
+targets.csv
+*.jsonl
+README.md
+RustDaemon.Test

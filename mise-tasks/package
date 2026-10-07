@@ -1,0 +1,38 @@
+#!/usr/bin/env nu
+#MISE description="Publish and archive a RustDaemon build for release"
+#USAGE flag "--rid <rid>" help="Runtime identifier, or 'fdd' for framework-dependent" default="fdd" {
+#USAGE   choices "fdd" "linux-x64" "linux-arm64" "win-x64"
+#USAGE }
+#USAGE flag "--version <version>" help="Version to stamp and include in the archive name" default="0.0.0-dev"
+#USAGE flag "--output <output>" help="Output root directory" default="artifacts"
+#USAGE flag "--dist <dist>" help="Archive output directory" default="dist"
+#MISE depends=["publish --rid {{usage.rid}} --version {{usage.version}} --output {{usage.output}}"]
+
+let rid = $env.usage_rid
+let version = ($env.usage_version | str replace --regex '^v' '')
+let output = $env.usage_output
+let dist = $env.usage_dist
+let label = if $rid == "fdd" { "framework-dependent" } else { $rid }
+let src = $"($output)/($rid)"
+let name = $"rustd-($version)-($label)"
+let root = ($env.MISE_PROJECT_ROOT? | default $env.PWD)
+
+if not ($dist | path exists) { mkdir $dist }
+
+if $rid == "win-x64" {
+  let archive = ($"($dist)/($name).zip" | path expand)
+  rm -f $archive
+  if $nu.os-info.name == "windows" {
+    ^powershell -NoProfile -Command $"Compress-Archive -Path '($src)/*' -DestinationPath '($archive)' -Force"
+  } else {
+    cd $src
+    ^zip -qr $archive .
+    cd $root
+  }
+} else {
+  let archive = $"($dist)/($name).tar.gz"
+  rm -f $archive
+  ^tar -czf $archive -C $src .
+}
+
+ls $dist

@@ -1,0 +1,6 @@
+# Turret aim targets, one per line: yaw,pitch in degrees.
+# yaw is -180..180 (0 forward, positive clockwise); pitch is -45..75 (0 level, positive up).
+# Capture values with:  dotnet run --project RustDaemon.Cli -- turret observe --camera <turretId>
+# while aiming the Rust+ app at each target.
+-18.796,-4.512
+5.887,-5.033

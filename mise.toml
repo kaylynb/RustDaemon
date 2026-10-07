@@ -1,0 +1,21 @@
+[tools]
+dotnet = "11.0.100-rc.1.26425.128"
+"github:nushell/nushell" = "0.116.1"
+
+# Simple tasks live here; the multi-step ones are standalone nushell scripts in
+# mise-tasks/ so they read better and run unchanged on Linux, macOS, and Windows.
+
+[tasks.build]
+description = "Build the solution"
+run = "dotnet build --configuration Release"
+
+[tasks.test]
+description = "Run the test suite"
+run = "dotnet test"
+
+[tasks.ci]
+description = "Build then test (used by CI)"
+run = [
+  { task = "build" },
+  { task = "test" },
+]

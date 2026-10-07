@@ -1,0 +1,25 @@
+#!/usr/bin/env nu
+#MISE description="Publish RustDaemon for a runtime identifier, or as a portable framework-dependent build"
+#USAGE flag "--rid <rid>" help="Runtime identifier, or 'fdd' for framework-dependent" default="fdd" {
+#USAGE   choices "fdd" "linux-x64" "linux-arm64" "win-x64"
+#USAGE }
+#USAGE flag "--version <version>" help="Version to stamp into the assembly" default="0.0.0-dev"
+#USAGE flag "--output <output>" help="Output root directory" default="artifacts"
+
+let rid = $env.usage_rid
+let version = ($env.usage_version | str replace --regex '^v' '')
+let out = $"($env.usage_output)/($rid)"
+rm -rf $out
+
+let common = [
+  "publish", "RustDaemon.Cli/RustDaemon.Cli.csproj",
+  "--configuration", "Release",
+  $"-p:Version=($version)",
+  "--output", $out,
+]
+
+if $rid == "fdd" {
+  ^dotnet ...$common --self-contained "false" "-p:UseAppHost=false"
+} else {
+  ^dotnet ...$common --runtime $rid --self-contained "true" "-p:PublishSingleFile=true" "-p:DebugType=none"
+}

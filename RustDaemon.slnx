@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="RustDaemon.Test/RustDaemon.Test.csproj" />
+  </Folder>
+  <Project Path="RustDaemon.Core/RustDaemon.Core.csproj" />
+  <Project Path="RustDaemon.Cli/RustDaemon.Cli.csproj" />
+</Solution>
